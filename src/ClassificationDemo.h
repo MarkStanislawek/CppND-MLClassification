@@ -56,8 +56,9 @@ private:
   std::vector<std::string> _imageFiles;
   std::thread _demoThread;
   MessageQueue<std::tuple<std::string,std::string,double>> _msgQ;
-  std::atomic<bool> _stopped;
   std::unique_ptr<MLClassifier> _classifier;
+  std::mutex _mutex;
+  std::atomic<bool> _stopped;
 };
 
 #endif

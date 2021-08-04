@@ -38,11 +38,17 @@ template <typename T> bool MessageQueue<T>::IsMessageAvailable() {
 
 // ClassificationDemo Implementation
 ClassificationDemo::ClassificationDemo()
-    : _imageFiles(ImageUtilities::ImageFiles()), _stopped(false),
-      _classifier(std::make_unique<MLClassifier>()) {}
+    : _imageFiles(ImageUtilities::ImageFiles()),
+      _classifier(std::make_unique<MLClassifier>()), _stopped(true) {}
+
+ClassificationDemo::~ClassificationDemo() {}
 
 void ClassificationDemo::RunDemo() {
-  _demoThread = std::thread(&ClassificationDemo::Run, this);
+  std::lock_guard<std::mutex> lck(_mutex);
+  if (_stopped) {
+    _stopped = false;
+    _demoThread = std::thread(&ClassificationDemo::Run, this);
+  }
 }
 
 void ClassificationDemo::Run() {
@@ -89,6 +95,9 @@ ClassificationDemo::GetNextResult() {
 }
 
 void ClassificationDemo::Stop() {
-  _stopped = true;
-  _demoThread.join();
+  std::lock_guard<std::mutex> lck(_mutex);
+  if (!_stopped) {
+    _stopped = true;
+    _demoThread.join();
+  }
 }

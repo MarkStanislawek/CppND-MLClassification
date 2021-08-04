@@ -16,4 +16,9 @@ int main() {
 
     graphics->Stop();
     clsDemo->Stop();
+
+    delete clsDemo;
+    delete graphics;
+
+    return 0;
 }

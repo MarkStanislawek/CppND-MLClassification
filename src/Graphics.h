@@ -7,6 +7,7 @@
 #include "ClassificationDemo.h"
 #include <atomic>
 #include <thread>
+#include <mutex>
 
 
 
@@ -33,6 +34,7 @@ private:
   ClassificationDemo *_clsDemo;
   std::atomic<bool> _stopped;
   std::thread _displayThread;
+  std::mutex _mutex;
 };
 
 #endif
