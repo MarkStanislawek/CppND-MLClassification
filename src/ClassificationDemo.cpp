@@ -1,12 +1,16 @@
 #include "ClassificationDemo.h"
 #include <filesystem>
+#include <regex>
+
+static const std::regex image_files(".*\\.(?:gif|jpg|jpeg|png)");
 
 // Utilitiy function for finding images files.
 std::vector<std::string> ImageUtilities::ImageFiles() {
   std::vector<std::string> files;
   for (auto const &p :
        std::filesystem::directory_iterator(ImageUtilities::kImageDirectory)) {
-    if (!p.is_directory()) { // TODO: add file extension filter
+    if (!p.is_directory() &&
+        std::regex_match(p.path().filename().string(), image_files)) {
       files.emplace_back(p.path());
     }
   }

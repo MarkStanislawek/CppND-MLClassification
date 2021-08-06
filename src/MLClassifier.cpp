@@ -4,14 +4,28 @@
 #include <opencv2/imgproc.hpp>
 #include <stdexcept>
 
-MLClassifier::MLClassifier() {
-  // Load tensorflow model
-  _network = cv::dnn::readNetFromTensorflow(MLUtilities::kTfModelFile);
+MLClassifier::MLClassifier()
+    : _network(cv::dnn::readNetFromTensorflow(MLUtilities::kTfModelFile)),
+      _classNames(ReadClassNames(MLUtilities::kClassNamesFile)) {
   if (_network.empty())
     throw std::logic_error("Neural network is empty");
+}
 
-  // Load classification strings
-  _classNames = ReadClassNames(MLUtilities::kClassNamesFile);
+// Deep copy.  Will create another cv::dnn::Net instance.
+MLClassifier::MLClassifier(const MLClassifier &mlc)
+    : _network(mlc._network), _classNames(mlc._classNames) {}
+
+MLClassifier::MLClassifier(MLClassifier &&mlc)
+    : _network(std::move(mlc._network)),
+      _classNames(std::move(mlc._classNames)) {}
+
+// Shallow copy assignment.
+MLClassifier &MLClassifier::operator=(const MLClassifier &mlc) {
+  if (this == &mlc)
+    return *this;
+  _network = mlc._network;
+  _classNames = mlc._classNames;
+  return *this;
 }
 
 MLClassifier::~MLClassifier() {}
@@ -65,7 +79,6 @@ MLClassifier::ReadClassNames(const std::string &filename) {
   return classNames;
 }
 
-/* Find best class for the blob (i. e. class with maximal probability) */
 void MLClassifier::GetMaxClass(const cv::Mat &probBlob, int *classId,
                                double *classProb) {
   cv::Mat probMat = probBlob.reshape(1, 1); // reshape the blob to 1x1000 matrix

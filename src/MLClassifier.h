@@ -16,13 +16,20 @@ private:
   cv::dnn::Net _network;
   std::vector<std::string> _classNames;
 
+  // Read in the classification names Inception was trained to handle
   std::vector<std::string> ReadClassNames(const std::string &filename);
+  // Get the class ID and the associated probability for the class with the maximum probability.
   void GetMaxClass(const cv::Mat &probBlob, int *classId, double *classProb);
 
 public:
   MLClassifier();
+  // Deep copy constructor
+  MLClassifier(const MLClassifier&);
+  MLClassifier(MLClassifier&&);
+  MLClassifier& operator=(const MLClassifier&);
   ~MLClassifier();
 
+  // Classify an image, returning the classification name and the probability the model has in that classification.
   std::pair<std::string, double>
   ClassifyImage(const std::string &imageFile);
 };

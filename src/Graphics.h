@@ -17,6 +17,10 @@ public:
   Graphics();
   ~Graphics();
 
+  Graphics(const Graphics&) = delete;
+  Graphics(Graphics&&) = delete;
+  Graphics& operator=(const Graphics&) = delete;
+
   // getters / setters
   void SetDemonstrator(ClassificationDemo *);
 
