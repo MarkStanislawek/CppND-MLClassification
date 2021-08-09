@@ -57,6 +57,8 @@ public:
 private:
   // typical behaviour methods
   void Run();
+  /* Takes an int& so that the position within the images vector can be managed
+   * and that state can be shared with the caller. */
   void AddClassification(int &);
 
   // member variables

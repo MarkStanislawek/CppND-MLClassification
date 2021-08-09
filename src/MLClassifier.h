@@ -23,9 +23,10 @@ private:
 
 public:
   MLClassifier();
-  // Deep copy constructor
+  // Copy constructor  Creates copies of cv::dnn::Net & std::vector<std::string>
   MLClassifier(const MLClassifier&);
   MLClassifier(MLClassifier&&);
+  // Copy assignment operator.  Works similar to copy constructor creating copies of members.
   MLClassifier& operator=(const MLClassifier&);
   ~MLClassifier();
 

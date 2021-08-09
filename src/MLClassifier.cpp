@@ -11,7 +11,6 @@ MLClassifier::MLClassifier()
     throw std::logic_error("Neural network is empty");
 }
 
-// Deep copy.  Will create another cv::dnn::Net instance.
 MLClassifier::MLClassifier(const MLClassifier &mlc)
     : _network(mlc._network), _classNames(mlc._classNames) {}
 
@@ -19,7 +18,6 @@ MLClassifier::MLClassifier(MLClassifier &&mlc)
     : _network(std::move(mlc._network)),
       _classNames(std::move(mlc._classNames)) {}
 
-// Shallow copy assignment.
 MLClassifier &MLClassifier::operator=(const MLClassifier &mlc) {
   if (this == &mlc)
     return *this;

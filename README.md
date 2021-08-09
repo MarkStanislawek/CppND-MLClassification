@@ -62,16 +62,16 @@ The program utilizes pointers, smart pointers, and has functions / methods that 
 +  _src/Main.cpp lines: 6-9_.  Creates new ClassificationDemo and Graphics objects on the heap.  Lines: 20-21 delete these objects on program termination.
 + _src/Graphics.cpp line 13_.  Uses the class destructor to ensure opencv::Window resources are properly released.
 + _src/ClassificationDemo.h line: 59_ declares a unique_ptr member to hold the MLClassfier object, utilizing smart pointers and the scope of the ClassificationDemo instance to manage the MLClassifier object lifespan and clean up.
-+ _src/ClassificationDemo.cpp Line: 79_ is one example of a method which takes a int& reference.  This method accepts a reference parameter so that it can be modified before returning to the caller, enabling the method to update the position within the vector of images, and importantly, wrapping the position back to the beginning once the end is reached.
++ _src/ClassificationDemo.cpp Line: 79_ is one example of a method which takes a int& reference.  This method accepts a reference parameter so that it can be updated before returning to the caller, enabling the method to manage the position within the vector of images, and importantly, wrapping the position back to the beginning once the end is reached.
 + Copy and move constructors and assignment operators are deleted from Graphics, ClassificationDemo, and MessageQueue classes as they contain mutex, condition_variable, and unique_ptr variables.  The default constructor and destructor is implemented in these classes.
-+ The rule of five is also implented for MLClassifier class, however, this class does provides implementations for copy, move, and assignment.
++ The rule of five is also implemented for MLClassifier class, and, this class provides full implementations for copy, move, and assignment.
 
 
 ### **Multithreading**
 The application spawns two threads:
 
 + _src/Graphics.cpp line: 19_  & 
-+ _src/Classification.cpp line: 54_
++ _src/ClassificationDemo.cpp line: 54_
 
 The threads communicate using a MessageQueue object, similar to the one used in the traffic simulation, but with some minor enhancements.  See:
 
@@ -81,5 +81,10 @@ The MessageQueue employs a mutex and condition_variable for safely synchronizing
 
 + line 25-26 usage of unique_lock and condition_variable::wait
 + line 33 & 35 lock_guard and condition_variable::notify_one usage.
+
+The Graphics and ClassificationDemo classes also employ a std::mutex member variable along with an std::atomic<bool>.  And their Start and Stop methods utilize a std::lock_guard to synchronize starting and stopping of their threads.  See:
+
++ Graphics::Start, Graphics::Stop, & Graphics::Run (_src/Graphics.cpp lines: 15-21, 24,  & 37-43_)
++ ClassificationDemo::RunDemo, ClassificationDemo::Stop, & ClassificationDemo::Run (_src/ClassificationDemo.cpp lines: 50-56, 64, 101-107_)
 
 
